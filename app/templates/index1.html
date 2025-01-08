@@ -1,0 +1,29 @@
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Homelab</title> 
+        
+        <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}"> 
+    </head> 
+    
+    <body> 
+        <h1>Bem-vindo ao seu Homelab</h1> 
+        
+        <div class="container"> <h2>Serviços Ativos:</h2> 
+            <ul> {% for service in services %} 
+                <li> <strong>{{ service.name }}</strong>
+                    <br>
+                    <small>Description: {{ service.description }}</small>  
+                    <br>
+                    Status: <span class="{{ 'online' if service.status == 'online' else 'offline' }}">{{ service.status }}</span>
+                    <br> 
+                    <small>Última atualização: {{ service.last_updated }}</small> 
+                </li> {% endfor %} 
+            </ul> 
+        </div> 
+        
+        <button onclick="window.location.href='/api/refresh'">Atualizar Dados</button> 
+    </body> 
+</html>

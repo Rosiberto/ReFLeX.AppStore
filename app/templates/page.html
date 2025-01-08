@@ -1,0 +1,93 @@
+<!DOCTYPE html> 
+<html lang="pt-br"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Homelab - Subir Container FIWARE Orion</title> 
+        
+        <style> 
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin-top: 50px; 
+            } 
+            .container { 
+                max-width: 600px; 
+                margin: 0 auto; 
+            }
+            button { 
+                padding: 10px 20px; 
+                font-size: 16px; 
+                cursor: pointer; 
+                background-color: #4CAF50; 
+                color: white; 
+                border: none; 
+                border-radius: 5px; 
+            } 
+            button:disabled { 
+                background-color: #ccc; 
+            } 
+            .response {
+                margin-top: 20px; 
+                padding: 10px; 
+                background-color: #f4f4f4; 
+                border: 1px solid #ddd; 
+                border-radius: 5px; 
+                display: none; 
+            } 
+            .success { 
+                color: green; 
+            } 
+            .error { 
+                color: red; 
+            } 
+        </style> 
+    </head> 
+    
+    <body> 
+        <div class="container"> 
+            <h1>Homelab - Subir Container MYSQL</h1> 
+            
+            <button id="startBtn">Subir Container</button> 
+            <div id="response" class="response"></div> 
+        </div> 
+        
+        <script> 
+            document.getElementById('startBtn').addEventListener('click', function(){ 
+                // Desativa o botão enquanto a requisição está em andamento 
+                this.disabled = true; 
+                // Exibe mensagem de loading 
+                const responseDiv = document.getElementById('response'); 
+                responseDiv.style.display = 'none'; 
+                responseDiv.innerHTML = 'Subindo o container, por favor aguarde...'; 
+                responseDiv.style.display = 'block'; 
+                
+                let headers = new Headers();
+                headers.append('Access-Control-Allow-Origin', 'http://localhost:5000');
+                headers.append('Access-Control-Allow-Credentials', 'true');
+                headers.append('Access-Control-Allow-Methods','GET, POST, OPTIONS');
+                headers.append('Access-Control-Allow-Headers','Content-Type, Authorization');
+                
+                // Faz a requisição para o servidor Flask 
+                fetch('http://localhost:5000/start_container',
+                        {
+                            mode: 'no-cors',
+                            headers: headers
+                        })
+                .then(response => response.json())
+                .then(json => console.log(json))
+                .then(data => {                     
+                    if (data.status === '0'){responseDiv.className = 'response success';responseDiv.innerHTML = 'Container ${data.container_name} iniciado com sucesso! ID: ${data.container_id}';}
+                    else{responseDiv.className = 'response error data'; responseDiv.innerHTML = 'Erro: ${error.message}'; } 
+                }) 
+                .catch(error =>{ 
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = 'Erro: ${error.message}';
+                }) 
+                .finally(() => {// Reativa o botão após a requisição 
+                                document.getElementById('startBtn').disabled = false;});
+                                
+            });
+                </script> 
+    </body>
+</html> 
