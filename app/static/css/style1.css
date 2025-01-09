@@ -45,4 +45,10 @@ button {
 
 button:hover { 
     background-color: #0056b3; 
-} 
+}
+
+.textoCard {
+    text-align: justify;    
+    font-size:x-small;
+    margin: auto;
+  }
